@@ -1,189 +1,130 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code SIV</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" href="icon.png" />
-  <meta name="theme-color" content="#2d89ef" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🚆 Code SIV</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
     body {
-      font-family: "Segoe UI", Roboto, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
       margin: 0;
       padding: 0;
-      background: #f2f4f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      text-align: center;
     }
-
     header {
-      background-color: #2d89ef;
+      background-color: #1e90ff;
       color: white;
-      width: 100%;
-      text-align: center;
-      padding: 20px 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: start;
-      padding: 30px 20px;
-      width: 100%;
-      max-width: 600px;
-    }
-
     input {
-      padding: 15px;
-      width: 100%;
-      max-width: 300px;
-      font-size: 18px;
+      margin: 2rem auto 1rem;
+      display: block;
+      padding: 0.75rem;
+      font-size: 1.25rem;
+      border: 2px solid #ccc;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #resultat {
-      font-size: 20px;
-      font-weight: 600;
-      color: #333;
-      background-color: #fff;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      width: 80%;
       max-width: 300px;
-      text-align: center;
-      transition: 0.3s ease;
     }
-
-    .ok {
-      color: #2d963d;
+    .result {
+      margin-top: 1rem;
     }
-
-    .ko {
-      color: #b50000;
+    .card {
+      background: white;
+      display: inline-block;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .card span {
+      display: block;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+    .renfort {
+      color: red;
+      font-weight: bold;
+    }
+    .notfound {
+      background: white;
+      display: inline-block;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      color: #d9534f;
+      font-weight: bold;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🚆 Code SIV</h1>
-  </header>
-
-  <main>
-    <input type="text" id="trainInput" placeholder="Ex : 19901" inputmode="numeric" />
-    <div id="resultat"></div>
-  </main>
+  <header>🚄 Code SIV</header>
+  <input type="text" id="trainInput" placeholder="Ex : 19901 ou L110" />
+  <div class="result" id="result"></div>
 
   <script>
-    const baseSIV = {
-      "19901": "Tournai 5", "19905": "Tournai 7", "19913": "Tournai 7", "19915": "Tournai 7",
-      "19919": "Tournai 7", "19933": "Tournai 7", "19941": "Tournai 7",
-      "19951": "Tournai 7", "19959": "Tournai 7", "19963": "Tournai 7",
-      "19967": "Tournai 7", "19975": "Tournai 7", "19979": "Tournai 7",
-      "19917": "Tournai 7", "19921": "Tournai 7", "19923": "Tournai 7", "19931": "Tournai 7",
-      "19935": "Tournai 7", "19939": "Tournai 7", "19943": "Tournai 7",
-      "19947": "Tournai 7", "19961": "Tournai 7", "19965": "Tournai 7",
-      "19969": "Tournai 7", "19973": "Tournai 7", "19903": "Tournai 8",
-      "19953": "Tournai 8", "19907": "Tournai 8", "19911": "Tournai 8",
-      "19929": "Tournai 8", "19955": "Tournai 8", "19909": "Tournai 9",
-      "19927": "Tournai 9", "19945": "Tournai 9", "19900": "Lille 3",
-      "19946": "Lille 3", "19904": "Lille 4", "19956": "Lille 4",
-      "19908": "Lille 4", "19906": "Lille 5", "19914": "Lille 6",
-      "19918": "Lille 6", "19922": "Lille 6", "19928": "Lille 6",
-      "19932": "Lille 6", "19958": "Lille 6", "19962": "Lille 6",
-      "19966": "Lille 6", "19970": "Lille 6", "19974": "Lille 6",
-      "19910": "Lille 6", "19916": "Lille 6", "19920": "Lille 6",
-      "19924": "Lille 6", "19930": "Lille 6", "19934": "Lille 6",
-      "19940": "Lille 6", "19944": "Lille 6", "19948": "Lille 6",
-      "19954": "Lille 6", "19960": "Lille 6", "19964": "Lille 6",
-      "19968": "Lille 6", "19972": "Lille 6", "19976": "Lille 6",
-      "19912": "Lille 7", "19938": "Lille 9", "19952": "Lille 9"
+    const trains = {
+      "19945":{"siv":"Tournai 9","horaires":[{"station":"Lille","time":"16:08"},{"station":"Tournai","time":"16:36"}]},
+      "19958":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"17:25"},{"station":"Lille","time":"17:52"}]},
+      "19959":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"18:08"},{"station":"Tournai","time":"18:35"}]},
+      "19966":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"19:25"},{"station":"Lille","time":"19:52"}]},
+      "19967":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"20:08"},{"station":"Tournai","time":"20:35"}]},
+      "19974":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"21:24"},{"station":"Lille","time":"21:52"}]}
     };
 
-    const input = document.getElementById("trainInput");
-    const result = document.getElementById("resultat");
+    const journees = {
+      "L110": {
+        "trains": ["19945", "19958", "19959", "19966", "19967", "19974"],
+        "renfort": ["19945", "19974"]
+      }
+    };
 
-    
-    const horairesData = {"19901":{"siv":"Tournai 5","horaires":[{"station":"Lille","time":"06:01"},{"station":"Tournai","time":"06:30"}]},"19903":{"siv":"Tournai 8","horaires":[{"station":"Lille","time":"07:08"},{"station":"Tournai","time":"07:38"}]},"19905":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"07:32"},{"station":"Tournai","time":"07:58"}]},"19909":{"siv":"Tournai 9","horaires":[{"station":"Lille","time":"08:08"},{"station":"Tournai","time":"08:37"}]},"19915":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"09:08"},{"station":"Tournai","time":"09:35"}]},"19919":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"10:08"},{"station":"Tournai","time":"10:35"}]},"19927":{"siv":"Tournai 9","horaires":[{"station":"Lille","time":"12:08"},{"station":"Tournai","time":"12:37"}]},"19933":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"13:08"},{"station":"Tournai","time":"13:35"}]},"19941":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"15:08"},{"station":"Tournai","time":"15:35"}]},"19945":{"siv":"Tournai 9","horaires":[{"station":"Lille","time":"16:08"},{"station":"Tournai","time":"16:36"}]},"19951":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"17:08"},{"station":"Tournai","time":"17:35"}]},"19953":{"siv":"Tournai 8","horaires":[{"station":"Lille","time":"17:32"},{"station":"Tournai","time":"18:05"}]},"19959":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"18:08"},{"station":"Tournai","time":"18:35"}]},"19963":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"19:08"},{"station":"Tournai","time":"19:35"}]},"19967":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"20:08"},{"station":"Tournai","time":"20:35"}]},"19975":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"22:08"},{"station":"Tournai","time":"22:35"}]},"19900":{"siv":"Lille 3","horaires":[{"station":"Tournai","time":"06:22"},{"station":"Lille","time":"06:52"}]},"19904":{"siv":"Lille 4","horaires":[{"station":"Tournai","time":"06:47"},{"station":"Lille","time":"07:22"}]},"19906":{"siv":"Lille 5","horaires":[{"station":"Tournai","time":"07:22"},{"station":"Lille","time":"07:52"}]},"19912":{"siv":"Lille 7","horaires":[{"station":"Tournai","time":"08:08"},{"station":"Lille","time":"08:34"}]},"19914":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"08:24"},{"station":"Lille","time":"08:52"}]},"19918":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"09:24"},{"station":"Lille","time":"09:52"}]},"19922":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"10:24"},{"station":"Lille","time":"10:52"}]},"19928":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"11:24"},{"station":"Lille","time":"11:52"}]},"19932":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"12:24"},{"station":"Lille","time":"12:54"}]},"19938":{"siv":"Lille 9","horaires":[{"station":"Tournai","time":"13:22"},{"station":"Lille","time":"13:52"}]},"19946":{"siv":"Lille 3","horaires":[{"station":"Tournai","time":"15:22"},{"station":"Lille","time":"15:52"}]},"19952":{"siv":"Lille 9","horaires":[{"station":"Tournai","time":"16:21"},{"station":"Lille","time":"16:52"}]},"19956":{"siv":"Lille 4","horaires":[{"station":"Tournai","time":"16:49"},{"station":"Lille","time":"17:22"}]},"19958":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"17:25"},{"station":"Lille","time":"17:52"}]},"19962":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"18:24"},{"station":"Lille","time":"18:52"}]},"19966":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"19:25"},{"station":"Lille","time":"19:52"}]},"19970":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"20:24"},{"station":"Lille","time":"20:52"}]},"19974":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"21:24"},{"station":"Lille","time":"21:52"}]},"19979":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"06:54"},{"station":"Tournai","time":"07:21"}]},"19907":{"siv":"Tournai 8","horaires":[{"station":"Lille","time":"07:49"},{"station":"Tournai","time":"08:21"}]},"19911":{"siv":"Tournai 8","horaires":[{"station":"Lille","time":"08:49"},{"station":"Tournai","time":"09:21"}]},"19913":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"08:54"},{"station":"Tournai","time":"09:21"}]},"19917":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"09:54"},{"station":"Tournai","time":"10:21"}]},"19921":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"10:54"},{"station":"Tournai","time":"11:21"}]},"19923":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"11:54"},{"station":"Tournai","time":"12:21"}]},"19929":{"siv":"Tournai 8","horaires":[{"station":"Lille","time":"12:49"},{"station":"Tournai","time":"13:21"}]},"19931":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"12:54"},{"station":"Tournai","time":"13:21"}]},"19935":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"13:54"},{"station":"Tournai","time":"14:21"}]},"19939":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"14:54"},{"station":"Tournai","time":"15:21"}]},"19943":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"15:54"},{"station":"Tournai","time":"16:21"}]},"19947":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"16:54"},{"station":"Tournai","time":"17:21"}]},"19955":{"siv":"Tournai 8","horaires":[{"station":"Lille","time":"17:49"},{"station":"Tournai","time":"18:21"}]},"19961":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"18:54"},{"station":"Tournai","time":"19:21"}]},"19965":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"19:53"},{"station":"Tournai","time":"20:21"}]},"19969":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"20:54"},{"station":"Tournai","time":"21:21"}]},"19973":{"siv":"Tournai 7","horaires":[{"station":"Lille","time":"21:54"},{"station":"Tournai","time":"22:21"}]},"19910":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"06:36"},{"station":"Lille","time":"07:04"}]},"19908":{"siv":"Lille 4","horaires":[{"station":"Tournai","time":"07:36"},{"station":"Lille","time":"08:09"}]},"19916":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"08:36"},{"station":"Lille","time":"09:04"}]},"19920":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"09:36"},{"station":"Lille","time":"10:04"}]},"19924":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"10:36"},{"station":"Lille","time":"11:04"}]},"19930":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"11:36"},{"station":"Lille","time":"12:04"}]},"19934":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"12:36"},{"station":"Lille","time":"13:06"}]},"19940":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"13:36"},{"station":"Lille","time":"14:04"}]},"19944":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"14:36"},{"station":"Lille","time":"15:04"}]},"19948":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"15:36"},{"station":"Lille","time":"16:04"}]},"19954":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"16:36"},{"station":"Lille","time":"17:04"}]},"19960":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"17:36"},{"station":"Lille","time":"18:04"}]},"19964":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"18:36"},{"station":"Lille","time":"19:04"}]},"19968":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"19:36"},{"station":"Lille","time":"20:04"}]},"19972":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"20:36"},{"station":"Lille","time":"21:04"}]},"19976":{"siv":"Lille 6","horaires":[{"station":"Tournai","time":"21:44"},{"station":"Lille","time":"22:12"}]}};
+    document.getElementById("trainInput").addEventListener("input", function () {
+      const input = this.value.trim().toUpperCase();
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "";
 
-    
-input.addEventListener("input", () => {
-  const val = input.value.trim();
-  result.innerHTML = "";
-  result.className = "";
+      if (input === "") return;
 
-  if (val === "") return;
+      if (trains[input]) {
+        // Recherche directe par train
+        resultDiv.appendChild(createTrainCard(input, trains[input]));
+      } else if (journees[input]) {
+        // Recherche par journée
+        journees[input].trains.forEach(trainNum => {
+          const train = trains[trainNum];
+          if (train) {
+            const card = createTrainCard(trainNum, train, journees[input].renfort?.includes(trainNum));
+            resultDiv.appendChild(card);
+          }
+        });
+      } else {
+        resultDiv.innerHTML = '<div class="notfound">❌ Aucun code SIV trouvé.</div>';
+      }
+    });
 
-  if (baseSIV[val]) {
-    const horaire = horairesData[val]?.horaires || [];
-    let horairesHTML = horaire.map(h => `<div>🕒 ${h.station} : ${h.time}</div>`).join("");
-    result.innerHTML = `<div>✅ Code SIV : <strong style="color:#2d89ef;">${baseSIV[val]}</strong></div>` + horairesHTML;
-    result.className = "ok";
-  } else if (journees[val]) {
-    const { trains, renfort = [] } = journees[val];
-    result.className = "ok";
-
-    result.innerHTML = trains.map(trainNum => {
-      const siv = baseSIV[trainNum] || "Inconnu";
-      const horaire = horairesData[trainNum]?.horaires || [];
-      const horairesHTML = horaire.map(h => `<div>🕒 ${h.station} : ${h.time}</div>`).join("");
-      const isRenfort = renfort.includes(trainNum);
-      return `
-        <div style="margin-bottom:15px; border-bottom:1px solid #ddd; padding-bottom:10px;">
-          <div>🚆 Train ${trainNum}</div>
-          <div>✅ Code SIV : <strong style="color:#2d89ef;">${siv}</strong></div>
-          ${horairesHTML}
-          ${isRenfort ? `<div style="color:#b50000; font-weight:bold;">📌 RENFORT</div>` : ""}
-        </div>
+    function createTrainCard(trainNum, data, isRenfort = false) {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        ✅ <b>Code SIV :</b> <a>${data.siv}</a>
+        <span>🕒 ${data.horaires[0].station} : ${data.horaires[0].time}</span>
+        <span>🕒 ${data.horaires[1].station} : ${data.horaires[1].time}</span>
+        ${isRenfort ? '<span class="renfort">🚨 Renfort</span>' : ''}
       `;
-    }).join("");
-  } else {
-    result.textContent = "❌ Aucun code SIV ou journée trouvée.";
-    result.className = "ko";
-  }
-});
-
-
-  
-const journees = {
-  "L110": {
-    "trains": ["19945", "19958", "19959", "19966", "19967", "19974"],
-    "renfort": ["19945", "19974"]
-  },
-  "L116": {
-    "trains": ["19939", "19948", "19947", "19960", "19961", "19968", "19969", "19976"]
-  },
-  "L117": {
-    "trains": ["19939", "19948", "19947", "19960", "19961", "19968", "19969", "19976"]
-  },
-  "L120": {
-    "trains": ["19945", "19956", "19953", "19962", "19963", "19970"]
-  },
-  "L125": {
-    "trains": ["19945", "19956", "19953", "19962", "19963", "19970"]
-  },
-  "L130": {
-    "trains": ["19933", "19946"]
-  },
-  "L160": {
-    "trains": ["19901", "19904", "19905", "19912", "19915", "19922"],
-    "renfort": ["19915"]
-  },
-  "L166": {
-    "trains": ["19979", "19908", "19911", "19920", "19921", "19930", "19929", "19940"]
-  },
-  "L167": {
-    "trains": ["19913", "19920", "19921", "19930", "19931", "19940"]
-  }
-};
-</script>
+      return div;
+    }
+  </script>
 </body>
 </html>
