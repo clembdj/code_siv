@@ -219,12 +219,12 @@
     function createTrainCard(trainNum, data, isRenfort = false) {
       const div = document.createElement("div");
       div.className = "card";
-      div.innerHTML = `
-<span class="${data.siv.startsWith('Tournai') ? 'siv-tournai' : 'siv-lille'}"><strong>Code SIV :</strong> ${data.siv}</span>
-       <span>🕒 ${data.horaires[0].station} : ${data.horaires[0].time}</span>
-       <span>🕒 ${data.horaires[1].station} : ${data.horaires[1].time}</span>
-       ${isRenfort ? '<span class="renfort">🚨 Renfort</span>' : ''}
-      `;
+div.innerHTML = `
+  🚆 <strong>Code SIV :</strong> <span class="${data.siv.startsWith('Tournai') ? 'siv-tournai' : 'siv-lille'}">${data.siv}</span>
+  <span>🕒 ${data.horaires[0].station} : ${data.horaires[0].time}</span>
+  <span>🕒 ${data.horaires[1].station} : ${data.horaires[1].time}</span>
+  ${isRenfort ? '<span class="renfort">🚨 Renfort</span>' : ''}
+`;
       return div;
     }
   </script>
