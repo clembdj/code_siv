@@ -64,6 +64,14 @@
       color: #d9534f;
       font-weight: bold;
     }
+    .siv-lille {
+     color: #ff8c00;
+     font-weight: bold;
+    }
+    .siv-tournai {
+    color: #28a745;
+    font-weight: bold;
+    }
     a {
       color: #007bff;
       text-decoration: none;
@@ -208,7 +216,7 @@
       const div = document.createElement("div");
       div.className = "card";
       div.innerHTML = `
-        ✅ <b>Code SIV :</b> <a>${data.siv}</a>
+        🚆 <b>Code SIV :</b> <a class="${data.siv.startsWith('Tournai') ? 'siv-tournai' : 'siv-lille'}">${data.siv}</a>
         <span>🕒 ${data.horaires[0].station} : ${data.horaires[0].time}</span>
         <span>🕒 ${data.horaires[1].station} : ${data.horaires[1].time}</span>
         ${isRenfort ? '<span class="renfort">🚨 Renfort</span>' : ''}
