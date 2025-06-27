@@ -50,7 +50,8 @@
     }
     .card span {
       display: block;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      font-family: 'Segoe UI', sans-serif;
       margin-top: 0.5rem;
     }
     .renfort {
@@ -73,11 +74,6 @@
     .siv-tournai {
     color: #28a745;
     font-weight: bold;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: bold;
     }
   </style>
 </head>
@@ -218,7 +214,10 @@
       const div = document.createElement("div");
       div.className = "card";
       div.innerHTML = `
-        🚆 <b>Code SIV :</b> <a class="${data.siv.startsWith('Tournai') ? 'siv-tournai' : 'siv-lille'}">${data.siv}</a>
+        <span>
+        🚆 <strong>Code SIV :</strong>
+        <span class="${data.siv.startsWith('Tournai') ? 'siv-tournai' : 'siv-lille'}">${data.siv}</span>
+        </span>
         <span>🕒 ${data.horaires[0].station} : ${data.horaires[0].time}</span>
         <span>🕒 ${data.horaires[1].station} : ${data.horaires[1].time}</span>
         ${isRenfort ? '<span class="renfort">🚨 Renfort</span>' : ''}
